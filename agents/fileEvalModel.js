@@ -20,11 +20,6 @@ exports.fileEvalModel = async function(files) {
                 }
             }
         }
-        const genAI = new ChatGoogleGenerativeAI({
-            model: 'gemini-2.5-flash',
-            apiKey: process.env.GOOGLE_API_KEY,
-            maxRetries:3
-        });
         const response = await genAI.invoke(await fileUplodPrompt(masterContent));
         return response;
     }
