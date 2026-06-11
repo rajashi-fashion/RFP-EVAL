@@ -18,9 +18,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const _router = express.Router();
-// const { chatAIModel } = require('./agents/chatAIModel');
-// const { fileEvalModel } = require('./agents/fileEvalModel');
-// const NestedRoute = require('./routers/index');
 const {formatResult} = require('./controllers/result_format');
 
 // Ensure uploads directory exists
