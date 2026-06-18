@@ -14,6 +14,17 @@ router.get('/all', (req, res) => {
     }
 });
 
+router.get('/:id', (req, res)=>{
+    try{
+        const {id} = req.params;
+        const stmt = db.prepare(`SELECT * FROM projects WHERE id = ?`);
+        const result = stmt.get(id);
+        res.json(formatResult(res, result, null))
+    }catch(err){
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
 router.post('/add', (req, res) => {
     try {
         const { id, name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, country, industry, lastDate, userId } = req.body;
