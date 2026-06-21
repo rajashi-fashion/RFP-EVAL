@@ -1,4 +1,4 @@
-export default function filePrompt(cleanTextSkeleton) {
+exports.filePrompt=async (cleanTextSkeleton)=> {
   return `
         You are a helpful assistant that extracts the main content from a file and provides it in a clean format. The file content is as follows:
         ====================================================================
@@ -9,3 +9,4 @@ export default function filePrompt(cleanTextSkeleton) {
                 
   `;
 }
+
