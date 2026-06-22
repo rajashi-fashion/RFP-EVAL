@@ -99,12 +99,48 @@ router.put('/update/:id', (req, res) => {
     }
 });
 
+router.post('/update/:id', (req, res) => {
+    try {
+        const { id: paramId } = req.params;
+        const { name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, lastDate, country, industry, userId } = req.body;
+        const stmt = db.prepare(`UPDATE projects SET name = ?, description = ?, files = ?, isEvaluated = ?, projectOwnerId = ?, proposalId = ?, projectStatus = ?, projectScore = ?, projectFeedback = ?, projectFlags = ?, projectEvaluationReportUrl = ?, existingUrls = ?, reviewerId = ?, assigneeId = ?, evaluationResult = ?, projectmanagerId = ?, country = ?, industry = ?, lastDate = ?, updatedAt = ?, updatedBy = ? WHERE id = ?`);
+        const result = stmt.run(
+            name, 
+            description, 
+            Array.isArray(files) ? JSON.stringify(files) : files,
+            isEvaluated ? 1 : 0,
+            projectOwnerId, 
+            proposalId, 
+            projectStatus, 
+            projectScore, 
+            Array.isArray(projectFeedback) ? JSON.stringify(projectFeedback) : projectFeedback,
+            Array.isArray(projectFlags) ? JSON.stringify(projectFlags) : projectFlags,
+            projectEvaluationReportUrl, 
+            Array.isArray(existingUrls) ? JSON.stringify(existingUrls) : existingUrls,
+            reviewerId, 
+            Array.isArray(assigneeId) ? JSON.stringify(assigneeId) : assigneeId,
+            evaluationResult, 
+            projectmanagerId, 
+            country, 
+            industry, 
+            lastDate,
+            Date.now(), 
+            userId, 
+            paramId
+        );
+        res.json(formatResult(res, { changes: result.changes }, null));
+    } catch (err) {
+        console.error('Error updating project:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 router.delete('/delete/:id', (req, res) => {
     try {
         const { id } = req.params;
         const stmt = db.prepare('DELETE FROM projects WHERE id = ?');
         const result = stmt.run(id);
-        res.json(formatResult(res, { changes: result.changes }, null));
+        res.json(formatResult(res, { changes: result }, null));
     } catch (err) {
         console.error('Error deleting project:', err);
         res.status(500).json({ error: 'Internal Server Error' });

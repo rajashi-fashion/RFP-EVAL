@@ -8,16 +8,9 @@ const fs = require('fs');
 
 exports.fileEvalController = async (req, res) => {
     try {
-
-        //  const result = db.prepare(`
-        //     UPDATE projects SET files = ? WHERE id = ?`).run(
-        //     Array.isArray(req.files) ? JSON.stringify(req.files) : req.files,
-        //     req.body.id
-        // ); 
-        console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
         let mergedText = '';
 
-        for (let file of req.files) {
+        for (let file of req.body.files) {
            const pdfBuffer = fs.readFileSync(file.path);
 
             const text = await extractPdfText(pdfBuffer);

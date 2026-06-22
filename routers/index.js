@@ -14,5 +14,6 @@ _router.get('/', (req, res)=>{
 });
 _router.use('/auth', require('./auth'));
 _router.use('/eval', require('./eval'));
+_router.use('/user', require('./users.router'));
 _router.use('/projects', require('./project.router'));
 module.exports = _router;

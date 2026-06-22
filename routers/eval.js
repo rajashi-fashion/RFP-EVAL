@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const {fileEvalController} = require('../controllers/file_eval.controller');
+const { FileUploadController } = require('../controllers/fileUpload.controller');
 
 const upload = multer({ dest: 'uploads/' });
 const storage = multer.diskStorage({
@@ -21,6 +22,6 @@ const uploadWithStorage = multer({ storage: storage });
 
 
 
-_evalRouter.post('/upload', uploadWithStorage.array('files'), fileEvalController);
+_evalRouter.post('/upload', uploadWithStorage.array('files'), FileUploadController);
 
 module.exports = _evalRouter;
