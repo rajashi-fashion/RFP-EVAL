@@ -12,8 +12,8 @@ const {formatResult} = require('../controllers/result_format');
 _router.get('/', (req, res)=>{
     res.json(formatResult('Welcome to the API', null));
 });
+_router.use('/user', require('./users.router'));
 _router.use('/auth', require('./auth'));
 _router.use('/eval', require('./eval'));
-_router.use('/user', require('./users.router'));
 _router.use('/projects', require('./project.router'));
 module.exports = _router;
