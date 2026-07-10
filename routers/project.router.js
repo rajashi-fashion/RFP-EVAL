@@ -66,7 +66,7 @@ router.post('/add', (req, res) => {
 router.put('/update/:id', (req, res) => {
     try {
         const { id: paramId } = req.params;
-        const { name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, country, industry, userId } = req.body;
+        const { name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, country, industry, userId, id } = req.body;
         const stmt = db.prepare(`UPDATE projects SET name = ?, description = ?, files = ?, isEvaluated = ?, projectOwnerId = ?, proposalId = ?, projectStatus = ?, projectScore = ?, projectFeedback = ?, projectFlags = ?, projectEvaluationReportUrl = ?, existingUrls = ?, reviewerId = ?, assigneeId = ?, evaluationResult = ?, projectmanagerId = ?, country = ?, industry = ?, lastDate = ?, updatedAt = ?, updatedBy = ? WHERE id = ?`);
         const result = stmt.run(
             name, 
@@ -90,7 +90,7 @@ router.put('/update/:id', (req, res) => {
             Date.now(), 
             Date.now(), 
             userId, 
-            paramId
+            id
         );
         res.json(formatResult(res, { changes: result.changes }, null));
     } catch (err) {
@@ -102,7 +102,7 @@ router.put('/update/:id', (req, res) => {
 router.post('/update/:id', (req, res) => {
     try {
         const { id: paramId } = req.params;
-        const { name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, lastDate, country, industry, userId } = req.body;
+        const { name, description, files, isEvaluated, projectOwnerId, proposalId, projectStatus, projectScore, projectFeedback, projectFlags, projectEvaluationReportUrl, existingUrls, reviewerId, assigneeId, evaluationResult, projectmanagerId, lastDate, country, industry, userId, id } = req.body;
         const stmt = db.prepare(`UPDATE projects SET name = ?, description = ?, files = ?, isEvaluated = ?, projectOwnerId = ?, proposalId = ?, projectStatus = ?, projectScore = ?, projectFeedback = ?, projectFlags = ?, projectEvaluationReportUrl = ?, existingUrls = ?, reviewerId = ?, assigneeId = ?, evaluationResult = ?, projectmanagerId = ?, country = ?, industry = ?, lastDate = ?, updatedAt = ?, updatedBy = ? WHERE id = ?`);
         const result = stmt.run(
             name, 
@@ -126,7 +126,7 @@ router.post('/update/:id', (req, res) => {
             lastDate,
             Date.now(), 
             userId, 
-            paramId
+            id
         );
         res.json(formatResult(res, { changes: result.changes }, null));
     } catch (err) {

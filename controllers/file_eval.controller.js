@@ -5,6 +5,8 @@ const {filePrompt} = require("../prompt/file_prompt");
 const { extractPdfText } = require('./pdfParser.controller');
 const {evaluateDocument} = require('../controllers/ai_eval.controller')
 const fs = require('fs');
+const  {GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI} = require('@langchain/google-genai')
+require('dotenv').config();
 
 exports.fileEvalController = async (req, res) => {
     try {

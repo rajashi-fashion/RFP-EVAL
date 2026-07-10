@@ -7,6 +7,8 @@ const ai = new ChatGoogleGenerativeAI({
     model: "gemini-1.5-flash"
 });
 
+
+
 exports.evaluateDocument = async (textPrompt) => {
     const message = new HumanMessage(textPrompt);
     const response = await ai.invoke([message]);

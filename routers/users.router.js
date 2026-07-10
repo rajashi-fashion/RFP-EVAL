@@ -28,6 +28,17 @@ _router.post('/add', (req, res) => {
     }
 })
 
+_router.get('/:id', (req, res)=>{
+    try{
+        const {id} = req.params;
+        const stmt = db.prepare(`SELECT * FROM users WHERE id = ?`);
+        const result = stmt.get(id);
+        res.json(formatResult(res, result, null))
+    }catch(err){
+        res.json(formatResult(res, null, err));
+    }
+})
+
 _router.get('/all', (req, res)=>{
     try{
         const data = db.prepare('SELECT * FROM users').all();
