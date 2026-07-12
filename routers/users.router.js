@@ -41,7 +41,7 @@ userRouter.post('/add', async (req, res) => {
 userRouter.get('/:id', (req, res)=>{
     try{
         const {id} = req.params;
-        const result = USER.findOne({id});
+        const result = USER.findById(id);
         if(!result){
             return res.status(404).json({error: 'User not found'});
         }

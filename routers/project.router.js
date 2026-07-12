@@ -25,7 +25,7 @@ router.get('/all', async(req, res) => {
 router.get('/:id', async(req, res)=>{
     try{
         const {id} = req.params;
-        const project = await PROJECT.findOne({id: id}).lean();
+        const project = await PROJECT.findById(id).lean();
         if(!project){
             return res.status(404).json({error: 'Project not found'});
         }
@@ -49,7 +49,7 @@ router.post('/add', async (req, res) => {
 router.post('/update/:id', async (req, res) => {
     try {
         const { id: paramId } = req.params;
-        const project = await PROJECT.findOneAndUpdate({ id: paramId }, req.body, { new: true });
+        const project = await PROJECT.findByIdAndUpdate(paramId, req.body, { new: true });
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -64,7 +64,8 @@ router.post('/update/:id', async (req, res) => {
 router.put('/update/:id', async (req, res) => {
     try {
         const { id: paramId } = req.params;
-        const project = await PROJECT.findOneAndUpdate({ id: paramId }, req.body, { new: true });
+        console.log('Updating project with ID:', paramId, 'with data:', req.body);
+        const project = await PROJECT.findByIdAndUpdate(paramId, req.body, { new: true });
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -79,7 +80,7 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await PROJECT.findOneAndDelete({id: id });
+        const project = await PROJECT.findByIdAndDelete(id);
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
