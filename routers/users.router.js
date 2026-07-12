@@ -1,40 +1,38 @@
-
-
 const express = require('express');
 const { formatResult } = require('../controllers/result_format');
 const db = require('../db');
 const app = express();
+const USER = require('../schema/user');
 
 const userRouter = express.Router();
 
-userRouter.get('/all', (req, res)=>{
+userRouter.get('/all', async(req, res)=>{
     console.log("Start...");
     try{
-        const data = db.prepare('SELECT * FROM users').all();
-        res.json(formatResult(res, data, null))
+        const users = await USER.find().lean();
+        res.json(formatResult(res, users, null));
     }catch(err){
         console.error("Error fetching users data:", err);
         res.json(formatResult(res, null, err));
     }
 })
 
-userRouter.get('/create', (req, res) => {
+userRouter.get('/create', async (req, res) => {
     try {
-        db.prepare('CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name VARCHAR(100),empId VARCHAR(100), email VARCHAR(250), phone VARCHAR(100), grade VARCHAR(50), createdAt DATE, updatedAt DATE, createdBy VARCHAR(255), updatedBy VARCHAR(255))').run();
-        console.log("Users table created or already exists.");
-        res.json(formatResult(res, { message: 'Successfuly Created!' }, null))
+        const result = new USER(req.body);
+        await result.save();
+        res.json(formatResult(res, result, null));
     } catch (err) {
         res.json(formatResult(res, null, err));
     }
 });
 
 
-userRouter.post('/add', (req, res) => {
+userRouter.post('/add', async (req, res) => {
     try {
-        const { id, name, empId, email, phone, grade} = req.body;
-        const srtm = db.prepare('INSERT INTO users (id, name, empId, email, phone, grade, createdAt, updatedAt,createdBy,updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-       const result = srtm.run(id, name, empId, email, phone, grade, Date.now(), Date.now(), 'SAQW121', 'CALK35534' );
-        res.json(formatResult(res, result, null))
+        const result = new USER(req.body);
+        await result.save();
+        res.json(formatResult(res, result, null));
     } catch (err) {
         res.json(formatResult(res, null, err));
     }
@@ -43,8 +41,10 @@ userRouter.post('/add', (req, res) => {
 userRouter.get('/:id', (req, res)=>{
     try{
         const {id} = req.params;
-        const stmt = db.prepare(`SELECT * FROM users WHERE id = ?`);
-        const result = stmt.get(id);
+        const result = USER.findOne({id});
+        if(!result){
+            return res.status(404).json({error: 'User not found'});
+        }
         res.json(formatResult(res, result, null))
     }catch(err){
         res.json(formatResult(res, null, err));

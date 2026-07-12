@@ -7,7 +7,9 @@ const app = express();
 const path = require('path');
 const helmet = require('helmet');
 const expressRateLimit = require('express-rate-limit');
+const mongoConnection = require('./server');
 const port = 8080;
+
 app.use(helmet());
 const limiter = expressRateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -18,6 +20,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const _router = express.Router();
+
+mongoConnection().then(() => {
+    console.log('MongoDB connected successfully');
+}).catch((err) => {
+    console.error('Error connecting to MongoDB:', err);
+    process.exit(1);
+});
+
+
 const {formatResult} = require('./controllers/result_format');
 
 // Ensure uploads directory exists
@@ -49,18 +60,6 @@ app.get('/', (req, res) => {
     res.json(formatResult(res, 'Welcome to the API', null));
 });
 
-// _router.post('/eval', async (req, res) => {
-//     const { message } = req.body;
-//     const prompt = await chatAIModel(message);
-//     res.json({ result: prompt });
-// });
-// _router.post('/file-eval', upload.array('files'), async (req, res) => {
-//     console.log("Received file evaluation request with body:", req.files);
-//     const  _files  = req.files;
-
-//     const prompt = await fileEvalModel(_files);
-//     res.json({ result: prompt });
-// });
 
 app.use('/api', require('./routers/index'));
 app.listen(port, () => {
