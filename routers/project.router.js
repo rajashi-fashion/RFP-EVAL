@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../db');
 const {formatResult} = require('../controllers/result_format');
 const PROJECT = require('../schema/project');
+const FilterController = require('../controllers/filterController');
+const AnalyticsController = require('../controllers/analyticsController');
 
 router.get('/all', async(req, res) => {
     // try {
@@ -21,6 +23,23 @@ router.get('/all', async(req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.get('/analytics', AnalyticsController);
+
+router.get('/list', async(req, res)=>{
+    try{
+        const {page, limit} = req.query;
+        const pageNumber = parseInt(page) || 1;
+        const limitNumber = parseInt(limit) || 10;
+        const skip = (pageNumber - 1) * limitNumber;
+        const projects = await PROJECT.find().skip(skip).limit(limitNumber);
+        res.json(formatResult(res, projects, null));
+    }catch(err){
+        console.error('Error fetching projects:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 router.get('/:id', async(req, res)=>{
     try{
@@ -77,6 +96,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 
+
 router.delete('/delete/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -90,5 +110,9 @@ router.delete('/delete/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.get('/filter', FilterController);
+
+
 
 module.exports = router;
