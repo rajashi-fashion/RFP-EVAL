@@ -25,6 +25,7 @@ router.get('/all', async(req, res) => {
 });
 
 router.get('/analytics', AnalyticsController);
+router.get('/filter', FilterController);
 
 router.get('/list', async(req, res)=>{
     try{
@@ -111,7 +112,6 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-router.get('/filter', FilterController);
 
 
 

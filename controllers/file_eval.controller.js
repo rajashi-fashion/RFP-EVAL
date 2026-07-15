@@ -10,23 +10,24 @@ require('dotenv').config();
 
 exports.fileEvalController = async (req, res) => {
     try {
+        let project = req.body;
         let mergedText = '';
-
-        for (let file of req.body.files) {
-           const pdfBuffer = fs.readFileSync(file.path);
-
-            const text = await extractPdfText(pdfBuffer);
-
-            mergedText += `
-                FILE: ${file.originalname}
-                ---------------------
-                ${text}
-            `;
-        }
+        
+        if(project.files && project.files.length > 0){
+            for (let file of project.files) {
+                const pdfBuffer = fs.readFileSync(file.path);
+                const text = await extractPdfText(pdfBuffer);
+                mergedText += `
+                    FILE: ${file.originalname}
+                    ---------------------
+                    ${text}
+                `;
+            }
         console.log(filePrompt(mergedText));
         const Ai_Response = await  evaluateDocument(filePrompt(mergedText));
         console.log("#################################################\n", Ai_Response);
         res.json({result: Ai_Response, message: 'Files uploaded successfully'});
+        }
     }
     catch(err){
         console.error('Error uploading files:', err);

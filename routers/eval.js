@@ -9,6 +9,7 @@ const {fileEvalController} = require('../controllers/file_eval.controller');
 const { FileUploadController } = require('../controllers/fileUpload.controller');
 const { ca } = require('zod/locales');
 const { agent } = require('../agents/basic.agent');
+const { projectAgent } = require('../agents/project.agent')
 const { HumanMessage } = require('@langchain/core/messages');
 const upload = multer({ dest: 'uploads/' });
 const storage = multer.diskStorage({
@@ -32,8 +33,8 @@ _evalRouter.post('/chat', async (req, res)=>{
     try {
         console.log("Received request body:", req.body);
         const { message } = req.body;
-        const result = await agent.invoke({messages: [new HumanMessage(message)]});
-        
+        // const result = await agent.invoke({messages: [new HumanMessage(message)]});
+        const result = await projectAgent.invoke({messages:[new HumanMessage(message)]});
         const lastMessage = result.messages[result.messages.length - 1];
         const textResponse = lastMessage.content;
         console.log("Agent response:", textResponse);
