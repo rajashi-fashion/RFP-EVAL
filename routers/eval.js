@@ -9,7 +9,8 @@ const {fileEvalController} = require('../controllers/file_eval.controller');
 const { FileUploadController } = require('../controllers/fileUpload.controller');
 const { ca } = require('zod/locales');
 const { agent } = require('../agents/basic.agent');
-const { projectAgent } = require('../agents/project.agent')
+const { projectAgent } = require('../agents/project.agent');
+const {statusAgent} = require('../agents/status.agent');
 const { HumanMessage } = require('@langchain/core/messages');
 const upload = multer({ dest: 'uploads/' });
 const storage = multer.diskStorage({
@@ -43,6 +44,24 @@ _evalRouter.post('/chat', async (req, res)=>{
     }catch(err){
         console.error('Error in /chat route:', err);
         res.status(500).json(formatResult(res, null, err));
+    }
+});
+
+_evalRouter.get('/status', async(req, res)=>{
+    try {
+        // 1. MUST use 'await' here
+        const result = await statusAgent.invoke({
+            messages: [{ role: "user", content: "Run automated project health audit." }]
+        });
+
+        // 2. Access 'messages' (plural), NOT 'message'
+        const lastMessage = result.messages[result.messages.length - 1];
+        const textMessage = lastMessage.content;
+
+        res.json(formatResult(res, textMessage, null));
+    } catch (err) {
+        console.error('Error in /status route:', err);
+        res.status(500).json(formatResult(res, null, err.message));
     }
 })
 
