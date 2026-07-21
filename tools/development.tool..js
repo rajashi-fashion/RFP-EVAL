@@ -11,7 +11,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
     model: "text-embedding-004"
 });
 
-const fileEvaluationTool = tool(
+const developmentTool = tool(
     async ({ projectId }) => {
         try {
             // 1. Fetch the project details
@@ -48,12 +48,12 @@ const fileEvaluationTool = tool(
         }
     },
     {
-        name: 'fileEvaluationTool',
-        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and provide the estimation realated information',
+        name: 'developmentTool',
+        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and provide the Component wise estimation in front-end, database eestimation, module wise development estimation.',
         schema: z.object({
             projectId: z.string().describe('The database ID of the target project.'),
         })
     }
 );
 
-module.exports = { fileEvaluationTool };
+module.exports = { developmentTool };

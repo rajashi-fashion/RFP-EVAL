@@ -12,6 +12,7 @@ const projectSchema = new Schema({
     proposalId:{type:String},
     projectStatus:{type:String},
     projectScore:{type:Number},
+    lastDate:{type:Date},
     projectFeedback:{type:String},
     projectFlags:{type:[String]},
     projectEvaluationDetails:{

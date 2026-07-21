@@ -33,7 +33,7 @@ router.get('/list', async(req, res)=>{
         const pageNumber = parseInt(page) || 1;
         const limitNumber = parseInt(limit) || 10;
         const skip = (pageNumber - 1) * limitNumber;
-        const projects = await PROJECT.find().skip(skip).limit(limitNumber);
+        const projects = await PROJECT.find().sort({createdAt:-1}).skip(skip).limit(limitNumber);
         res.json(formatResult(res, projects, null));
     }catch(err){
         console.error('Error fetching projects:', err);
