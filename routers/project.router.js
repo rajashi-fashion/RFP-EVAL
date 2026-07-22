@@ -33,8 +33,16 @@ router.get('/list', async(req, res)=>{
         const pageNumber = parseInt(page) || 1;
         const limitNumber = parseInt(limit) || 10;
         const skip = (pageNumber - 1) * limitNumber;
-        const projects = await PROJECT.find().sort({createdAt:-1}).skip(skip).limit(limitNumber);
-        res.json(formatResult(res, projects, null));
+        const allProject = await PROJECT.find().lean();
+        const projects = await PROJECT.find().sort({_id:-1}).skip(skip).limit(limitNumber);
+        res.json({
+            results:projects, 
+            total:allProject.length, 
+            limit:limitNumber, 
+            pageNumber:pageNumber, 
+            statuscode:200, 
+            message:"Successfully fetch project list."
+        });
     }catch(err){
         console.error('Error fetching projects:', err);
         res.status(500).json({ error: 'Internal Server Error' });
