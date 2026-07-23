@@ -12,7 +12,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
 });
 
 const fileEvaluationTool = tool(
-    async ({ projectId }) => {
+    async ({ projectId, query }) => {
         try {
             // 1. Fetch the project details
             const project = await PROJECT.findById(projectId).lean();
@@ -21,11 +21,10 @@ const fileEvaluationTool = tool(
             }
 
             // 2. Connect to ChromaDB for this collection
-            // Tip: Use a collection name specific to the project or target PDF
-            const collectionName = `${projectId.files[0].name}`;
+            const collectionName = projectId;
             
             const vectorStore = await Chroma.fromExistingCollection(embeddings, {
-                collectionName: collectionName,
+                collectionName,
                 url: process.env.CHROMA_API_KEY || "http://localhost:8000"
             });
 
@@ -49,9 +48,10 @@ const fileEvaluationTool = tool(
     },
     {
         name: 'fileEvaluationTool',
-        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and provide the estimation realated information',
+        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and query text for contextual evaluation.',
         schema: z.object({
             projectId: z.string().describe('The database ID of the target project.'),
+            query: z.string().describe('The user query to search relevant document chunks.'),
         })
     }
 );

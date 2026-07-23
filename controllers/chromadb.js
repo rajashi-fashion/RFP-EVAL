@@ -22,13 +22,20 @@ export async function createCollection(collectionName) {
     }
 }
 
-export async function addDocumentsToCollection(collectionName, documentText, embeddingData) {
+export async function addDocumentsToCollection(collectionName, documentTexts, embeddingDataArray) {
     try {
         const collection = await client.getCollection({ name: collectionName });
+        const documents = Array.isArray(documentTexts) ? documentTexts : [documentTexts];
+        const embeddings = Array.isArray(embeddingDataArray) ? embeddingDataArray : [embeddingDataArray];
+
+        if (documents.length !== embeddings.length) {
+            throw new Error('documents and embeddings must have equal lengths');
+        }
+
         await collection.add({
-            ids: [uuidv4()],
-            embeddings: [embeddingData],
-            documents: [documentText],
+            ids: documents.map(() => uuidv4()),
+            embeddings,
+            documents,
         });
     } catch (err) {
         console.error('Error adding documents to collection:', err);

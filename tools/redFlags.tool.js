@@ -12,7 +12,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
 });
 
 const redFlagsTool = tool(
-    async ({ projectId }) => {
+    async ({ projectId, query }) => {
         try {
             // 1. Fetch the project details
             const project = await PROJECT.findById(projectId).lean();
@@ -21,11 +21,10 @@ const redFlagsTool = tool(
             }
 
             // 2. Connect to ChromaDB for this collection
-            // Tip: Use a collection name specific to the project or target PDF
-            const collectionName = `${project.id}`;
+            const collectionName = projectId;
             
             const vectorStore = await Chroma.fromExistingCollection(embeddings, {
-                collectionName: collectionName,
+                collectionName,
                 url: process.env.CHROMA_API_KEY || "http://localhost:8000"
             });
 
@@ -49,9 +48,10 @@ const redFlagsTool = tool(
     },
     {
         name: 'redFlagsTool',
-        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and provide the missing requirements, FQA, any question related to project/requirement and key Challenges.',
+        description: 'A tool for retrieve data from uploaded project PDF documents using vector search in ChromaDB. It takes projectId and query text for contextual red-flag analysis.',
         schema: z.object({
             projectId: z.string().describe('The database ID of the target project.'),
+            query: z.string().describe('The user query to search relevant document chunks.'),
         })
     }
 );
