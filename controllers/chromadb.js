@@ -10,29 +10,29 @@ const client = new CloudClient({
 });
 
 
-export async function createCollection(collectionName, embadingData) {
-   try{
-     const collection = await client.createCollection({name: collectionName});
-    await collection.add({
-        ids: [uuidv4()],
-        embeddings: [embadingData],
-        documents: embadingData
-    });
-   }catch(err){
+export async function createCollection(collectionName) {
+    try {
+        return await client.createCollection({ name: collectionName });
+    } catch (err) {
+        if (err?.message?.toLowerCase().includes('already exists')) {
+            return await client.getCollection({ name: collectionName });
+        }
         console.error('Error creating collection:', err);
-   }
+        throw err;
+    }
 }
 
-export async function addDocumentsToCollection(collectionName, documents) {
+export async function addDocumentsToCollection(collectionName, documentText, embeddingData) {
     try {
-        const collection = await client.getCollection({name: collectionName});
+        const collection = await client.getCollection({ name: collectionName });
         await collection.add({
             ids: [uuidv4()],
-            embeddings: [embadingData],
-            documents: embadingData
+            embeddings: [embeddingData],
+            documents: [documentText],
         });
     } catch (err) {
         console.error('Error adding documents to collection:', err);
+        throw err;
     }
 }
 

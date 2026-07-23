@@ -22,7 +22,7 @@ const redFlagsTool = tool(
 
             // 2. Connect to ChromaDB for this collection
             // Tip: Use a collection name specific to the project or target PDF
-            const collectionName = `${projectId.files[0].name}`;
+            const collectionName = `${project.id}`;
             
             const vectorStore = await Chroma.fromExistingCollection(embeddings, {
                 collectionName: collectionName,
